@@ -1,9 +1,9 @@
 //! The "dm ssh add" command.
 
-use crate::auth::resolve_auth;
-use crate::config::load_config;
-use crate::prompts::{Prompter, resolve_port, resolve_required};
-use crate::servers::{Server, upsert_server, validate_name};
+use crate::domain::auth::resolve_auth;
+use crate::storage::config::load_config;
+use crate::storage::servers::{Server, upsert_server, validate_name};
+use crate::ui::prompts::{Prompter, resolve_port, resolve_required};
 use anyhow::{Result, ensure};
 use dm_plugin_sdk::Context as PluginContext;
 use std::path::PathBuf;

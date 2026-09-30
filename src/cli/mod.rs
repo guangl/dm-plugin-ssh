@@ -1,21 +1,19 @@
 //! Parsing and dispatch of the "dm ssh" subcommands.
 
 mod add;
-mod cli;
+mod args;
+mod transfer;
 
-use crate::commands::add::{AddRequest, add_server};
-use crate::commands::cli::{Cli, SshCommand};
-use crate::export::{ExportDocument, export_document};
-use crate::import::import_document;
-use crate::list::{render_json, render_table};
-use crate::private_file::write_private_file;
-use crate::prompts::{Prompter, terminal_prompter};
-use crate::servers::{load_servers, remove_server};
-use crate::ssh_command::ssh_command;
+use crate::cli::add::{AddRequest, add_server};
+use crate::cli::args::{Cli, SshCommand};
+use crate::domain::ssh_command::ssh_command;
+use crate::storage::servers::{load_servers, remove_server};
+use crate::ui::list::{render_json, render_table};
+use crate::ui::prompts::{Prompter, terminal_prompter};
 use anyhow::{Context, Result, ensure};
 use clap::Parser;
 use dm_plugin_sdk::Context as PluginContext;
-use std::{ffi::OsString, fs, io::Write};
+use std::ffi::OsString;
 
 pub fn run_cli(context: &PluginContext) -> Result<i32> {
     run_with_prompter(context, terminal_prompter())
@@ -58,9 +56,9 @@ pub fn run_with_prompter(context: &PluginContext, prompter: Option<&dyn Prompter
                 println!("{}", render_json(&servers)?);
             } else {
                 let table = render_table(&servers);
-                // An empty store renders nothing at all, so "--json" is the
-                // only form that reports an empty list explicitly.
-                if !table.is_empty() {
+                if table.is_empty() {
+                    println!("No saved SSH servers. Run `dm ssh add <name>` to add one.");
+                } else {
                     println!("{table}");
                 }
             }
@@ -72,33 +70,8 @@ pub fn run_with_prompter(context: &PluginContext, prompter: Option<&dyn Prompter
         SshCommand::Export {
             file,
             include_secrets,
-        } => {
-            let servers = load_servers(context)?;
-            let document = export_document(context, servers, include_secrets, prompter)?;
-            let json = serde_json::to_vec_pretty(&document)?;
-            match file {
-                Some(path) => {
-                    write_private_file(&path, &json)?;
-                    println!(
-                        "Exported {} SSH servers to {}",
-                        document.count,
-                        path.display()
-                    );
-                }
-                None => {
-                    std::io::stdout().write_all(&json)?;
-                    println!();
-                }
-            }
-        }
-        SshCommand::Import { file, replace } => {
-            let document: ExportDocument = serde_json::from_slice(
-                &fs::read(&file).with_context(|| format!("Read {}", file.display()))?,
-            )
-            .with_context(|| format!("Parse SSH server export {}", file.display()))?;
-            let servers = import_document(context, document, replace, prompter)?;
-            println!("Imported {servers} SSH servers");
-        }
+        } => transfer::export(context, file, include_secrets, prompter)?,
+        SshCommand::Import { file, replace } => transfer::import(context, file, replace, prompter)?,
         SshCommand::Test { name } => {
             let mut command = ssh_command(context, &name, true)?;
             let status = command

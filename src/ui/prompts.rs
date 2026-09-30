@@ -1,7 +1,7 @@
 use anyhow::{Context, Result, ensure};
 use std::io::IsTerminal;
 
-use crate::auth::AUTH_REQUIRED;
+use crate::domain::auth::AUTH_REQUIRED;
 
 /// Source of interactive answers.
 ///

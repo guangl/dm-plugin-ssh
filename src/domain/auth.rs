@@ -2,8 +2,8 @@ use anyhow::{Result, ensure};
 use dm_plugin_sdk::Context as PluginContext;
 use std::path::PathBuf;
 
-use crate::crypto::encrypt;
-use crate::prompts::{Prompter, resolve_passphrase, resolve_password};
+use crate::storage::crypto::encrypt;
+use crate::ui::prompts::{Prompter, resolve_passphrase, resolve_password};
 
 pub(crate) const AUTH_REQUIRED: &str =
     "SSH password or key path is required; pass --password or --key, or run from a terminal";

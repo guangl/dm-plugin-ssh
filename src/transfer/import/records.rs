@@ -1,7 +1,7 @@
 //! The rules an imported SSH server record must satisfy.
 
-use crate::export::PortableServer;
-use crate::servers::{Server, validate_name};
+use crate::storage::servers::{Server, validate_name};
+use crate::transfer::export::PortableServer;
 use anyhow::{Result, ensure};
 use std::collections::HashSet;
 

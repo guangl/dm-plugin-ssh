@@ -2,15 +2,14 @@
 
 mod records;
 
-use crate::crypto::{encrypt, unhex};
-use crate::export::{EXPORT_KDF_ROUNDS, EXPORT_VERSION, ExportDocument, PortableServer};
-use crate::import::records::{retained_secret, validate};
-use crate::prompts::{Prompter, prompt_secret};
-use crate::servers::{Server, open_database};
-use aes_gcm::aead::{Aead, KeyInit};
-use aes_gcm::{Aes256Gcm, Key, Nonce};
+use crate::storage::crypto::{encrypt, unhex};
+use crate::storage::servers::{Server, open_database};
+use crate::transfer::export::{EXPORT_KDF_ROUNDS, EXPORT_VERSION, ExportDocument, PortableServer};
+use crate::transfer::import::records::{retained_secret, validate};
+use crate::ui::prompts::{Prompter, prompt_secret};
 use anyhow::{Context, Result, ensure};
 use dm_plugin_sdk::Context as PluginContext;
+use dm_plugin_support::secrets;
 use pbkdf2::pbkdf2_hmac;
 use rusqlite::params;
 use sha2::Sha256;
@@ -109,10 +108,7 @@ fn decrypt_payload(
     ensure!(payload.len() >= 12, "Invalid encrypted export length");
     let mut key = [0_u8; 32];
     pbkdf2_hmac::<Sha256>(passphrase.as_bytes(), &salt, EXPORT_KDF_ROUNDS, &mut key);
-    let cipher = Aes256Gcm::new(Key::<Aes256Gcm>::from_slice(&key));
-    let (nonce, ciphertext) = payload.split_at(12);
-    let plaintext = cipher
-        .decrypt(Nonce::from_slice(nonce), ciphertext)
+    let plaintext = secrets::open(&key, &payload)
         .map_err(|_| anyhow::anyhow!("Import passphrase is incorrect or export is damaged"))?;
     serde_json::from_slice(&plaintext).context("Parse decrypted SSH servers")
 }

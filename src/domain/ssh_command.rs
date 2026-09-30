@@ -2,9 +2,9 @@ use anyhow::{Context, Result};
 use dm_plugin_sdk::Context as PluginContext;
 use std::process::Command;
 
-use crate::config::{DEFAULT_CONNECT_TIMEOUT, load_config};
-use crate::crypto::decrypt;
-use crate::servers::load_servers;
+use crate::storage::config::{DEFAULT_CONNECT_TIMEOUT, load_config};
+use crate::storage::crypto::decrypt;
+use crate::storage::servers::load_servers;
 
 pub fn ssh_command(context: &PluginContext, name: &str, test: bool) -> Result<Command> {
     let server = load_servers(context)?

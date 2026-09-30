@@ -7,7 +7,7 @@ use std::path::PathBuf;
 #[command(
     name = "dm ssh",
     about = "Manage saved SSH server connections",
-    after_help = "This plugin reads its own configuration file (<config dir>/config.toml, see `dm info ssh`):\n  [defaults] port, username, auth, key\n  [test] connect_timeout"
+    after_help = "Getting started:\n  dm ssh add prod         Save a connection interactively\n  dm ssh list             Show saved connections\n  dm ssh export --file connections.json\n\nThis plugin reads its own configuration file (<config dir>/config.toml, see `dm info ssh`):\n  [defaults] port, username, auth, key\n  [test] connect_timeout"
 )]
 pub(crate) struct Cli {
     #[command(subcommand)]

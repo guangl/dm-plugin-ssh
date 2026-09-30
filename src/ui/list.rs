@@ -1,6 +1,6 @@
 //! How "dm ssh list" reports servers: a table for people, JSON for scripts.
 
-use crate::servers::Server;
+use crate::storage::servers::Server;
 use anyhow::Result;
 use comfy_table::presets::UTF8_FULL;
 use comfy_table::{ContentArrangement, Table};
