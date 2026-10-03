@@ -90,7 +90,7 @@ pub fn run_with_validator(
                     .any(|entry| entry.name == name),
                 "SSH server '{name}' is not configured"
             );
-            dm_plugin_support::interaction::confirm(prompter, yes, &format!("删除连接 {name}？"))?;
+            crate::support::interaction::confirm(prompter, yes, &format!("删除连接 {name}？"))?;
             remove_server(context, &name)?;
             println!("已删除 SSH 连接 {name}");
         }
@@ -100,7 +100,7 @@ pub fn run_with_validator(
         } => transfer::export(context, file, include_secrets, prompter)?,
         SshCommand::Import { file, replace } => transfer::import(context, file, replace, prompter)?,
         SshCommand::Test { name } => {
-            let name = dm_plugin_support::interaction::select_name(
+            let name = crate::support::interaction::select_name(
                 name,
                 &load_servers(context)?
                     .into_iter()
@@ -111,7 +111,7 @@ pub fn run_with_validator(
             session::test(context, &name)?;
         }
         SshCommand::Ssh { name } => {
-            let name = dm_plugin_support::interaction::select_name(
+            let name = crate::support::interaction::select_name(
                 name,
                 &load_servers(context)?
                     .into_iter()

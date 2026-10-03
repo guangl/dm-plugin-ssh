@@ -46,7 +46,7 @@ pub fn resolve_auth(
         None => anyhow::bail!(AUTH_REQUIRED),
     };
     // `[defaults] auth` from the plugin configuration preselects the method.
-    let method = dm_plugin_support::interaction::validated(
+    let method = crate::support::interaction::validated(
         prompter,
         &format!(
             "认证方式 [password/key] ({}): ",
@@ -75,7 +75,7 @@ pub fn resolve_auth(
             ))
         }
         "key" => {
-            let key_path = dm_plugin_support::interaction::resolve_required(
+            let key_path = crate::support::interaction::resolve_required(
                 None,
                 "本机私钥路径: ",
                 "SSH key path must not be empty",

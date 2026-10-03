@@ -10,7 +10,11 @@ mod domain;
 mod storage;
 mod transfer;
 mod ui;
-use dm_plugin_support::private_file;
+
+#[doc(hidden)]
+pub mod support;
+
+use crate::support::private_file;
 
 pub use cli::{run_cli, run_with_prompter, run_with_validator};
 pub use domain::auth::resolve_auth;
