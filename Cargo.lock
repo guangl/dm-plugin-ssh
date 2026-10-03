@@ -573,7 +573,6 @@ dependencies = [
  "comfy-table",
  "crossterm",
  "dm-plugin-sdk",
- "dm-plugin-support",
  "fs2",
  "pbkdf2",
  "rand",
@@ -586,21 +585,6 @@ dependencies = [
  "tempfile",
  "tokio",
  "toml",
-]
-
-[[package]]
-name = "dm-plugin-support"
-version = "0.1.0"
-source = "git+https://github.com/guangl/dm-plugin-support.git?rev=9304a71f65bd4819a50a47aed40016e339e0ead7#9304a71f65bd4819a50a47aed40016e339e0ead7"
-dependencies = [
- "aes-gcm",
- "anyhow",
- "clap",
- "rand",
- "rpassword",
- "serde",
- "serde_json",
- "tempfile",
 ]
 
 [[package]]

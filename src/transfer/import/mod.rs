@@ -4,12 +4,12 @@ mod records;
 
 use crate::storage::crypto::{encrypt, unhex};
 use crate::storage::servers::{Server, open_database};
+use crate::support::secrets;
 use crate::transfer::export::{EXPORT_KDF_ROUNDS, EXPORT_VERSION, ExportDocument, PortableServer};
 use crate::transfer::import::records::{retained_secret, validate};
 use crate::ui::prompts::{Prompter, prompt_secret};
 use anyhow::{Context, Result, ensure};
 use dm_plugin_sdk::Context as PluginContext;
-use dm_plugin_support::secrets;
 use pbkdf2::pbkdf2_hmac;
 use rusqlite::params;
 use sha2::Sha256;

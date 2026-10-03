@@ -1,6 +1,6 @@
+use crate::support::secrets;
 use anyhow::{Context, Result, ensure};
 use dm_plugin_sdk::Context as PluginContext;
-use dm_plugin_support::secrets;
 use rand::{TryRng, rngs::SysRng};
 use std::{fs, path::PathBuf};
 
@@ -12,8 +12,7 @@ pub fn machine_key(context: &PluginContext) -> Result<[u8; 32]> {
     fs::create_dir_all(&context.data_dir).context("Create SSH plugin data directory")?;
     let path = key_path(context);
     if path.is_file() {
-        let bytes =
-            dm_plugin_support::bounded::file(&path, 32).context("Read SSH encryption key")?;
+        let bytes = crate::support::bounded::file(&path, 32).context("Read SSH encryption key")?;
         ensure!(
             bytes.len() == 32,
             "SSH encryption key is invalid; remove {} and retry",
@@ -50,4 +49,4 @@ pub fn decrypt(context: &PluginContext, text: &str) -> Result<Vec<u8>> {
     secrets::open(&key, &bytes).map_err(|_| anyhow::anyhow!("Decrypt SSH secret"))
 }
 
-pub use dm_plugin_support::codec::{hex, unhex};
+pub use crate::support::codec::{hex, unhex};

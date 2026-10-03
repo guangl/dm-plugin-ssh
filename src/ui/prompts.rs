@@ -1,11 +1,11 @@
 use anyhow::{Context, Result, ensure};
 
-pub(crate) use dm_plugin_support::interaction::terminal_prompter;
-pub use dm_plugin_support::interaction::{Prompter, TerminalPrompter, resolve_required};
+pub(crate) use crate::support::interaction::terminal_prompter;
+pub use crate::support::interaction::{Prompter, TerminalPrompter, resolve_required};
 
 /// Resolve the SSH port, defaulting to 22 when omitted.
 pub fn resolve_port(port: Option<u16>, prompter: Option<&dyn Prompter>) -> Result<u16> {
-    dm_plugin_support::interaction::port(port, 22, prompter)
+    crate::support::interaction::port(port, 22, prompter)
 }
 
 /// Resolve the password for `add`, prompting on the terminal when one was not
@@ -14,7 +14,7 @@ pub fn resolve_password(
     password: Option<String>,
     prompter: Option<&dyn Prompter>,
 ) -> Result<String> {
-    dm_plugin_support::interaction::password(
+    crate::support::interaction::password(
         password,
         prompter,
         "SSH password or key path is required; pass --password or --key, or run from a terminal",
